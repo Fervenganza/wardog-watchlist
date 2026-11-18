@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARDOG WATCHLIST // Registro Comunitario Anti-Cheats</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & JetBrains Mono & Rajdhani para toque táctico -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos tácticos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        display: ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        tactical: {
+                            950: '#07090d',
+                            900: '#0d1117',
+                            850: '#131922',
+                            800: '#1a222e',
+                            700: '#273244',
+                        },
+                        alert: {
+                            red: '#ff2a4b',
+                            crimson: '#d91636',
+                            orange: '#ff7b00',
+                            amber: '#ffb703',
+                            cyan: '#00f0ff'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-red': '0 0 15px rgba(255, 42, 75, 0.35)',
+                        'neon-orange': '0 0 15px rgba(255, 123, 0, 0.3)',
+                        'neon-cyan': '0 0 12px rgba(0, 240, 255, 0.25)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos personalizados tácticos y scrollbars */
+        body {
+            background-color: #07090d;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 42, 75, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(255, 123, 0, 0.05) 0%, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #273244;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2a4b;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(255, 42, 75, 0.5); }
+            50% { border-color: rgba(255, 42, 75, 1); }
+        }
+        .animate-alert-border {
+            animation: pulse-border 2.5s infinite;
+        }
+
+        .clip-corner {
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col antialiased selection:bg-alert-red selection:text-white">
+
+    <!-- ==================== HEADER TÁCTICO ==================== -->
+    <header class="sticky top-0 z-40 bg-tactical-950/90 backdrop-blur-md border-b border-tactical-700/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <!-- Logo y Título -->
+                <div class="flex items-center gap-3.5">
+                    <div class="relative flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-br from-alert-red to-alert-orange text-white shadow-neon-red shrink-0">
+                        <i class="fa-solid fa-crosshairs text-xl"></i>
+                        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-alert-red opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-alert-red"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-wider uppercase text-white leading-none">
+                                WARDOG <span class="text-alert-red">WATCHLIST</span>
+                            </h1>
+                            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-alert-red/15 text-alert-red border border-alert-red/30">
+                                LIVE INTEL
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            Base de datos comunitaria de <span class="text-slate-200 font-medium">Códigos Fijos (XXXX-XXX)</span> sospechosos de Cheats / Hacks
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción Principal -->
+                <div class="flex items-center gap-2.5 self-end sm:self-auto">
+                    <button onclick="resetDemoData()" title="Restaurar datos iniciales de ejemplo" class="px-3 py-2.5 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 hover:text-white border border-tactical-700 text-xs font-medium transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span class="hidden sm:inline">Reset Demo</span>
+                    </button>
+                    <button onclick="openReportModal()" class="px-4 py-2.5 rounded-lg bg-gradient-to-r from-alert-red to-alert-crimson hover:from-red-500 hover:to-alert-red text-white font-semibold text-sm shadow-neon-red transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Reportar / Votar Jugador</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Banner Informativo sobre el Sistema de Código Fijo -->
+        <div class="bg-tactical-900/90 border-l-4 border-alert-orange rounded-r-xl p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-fingerprint text-alert-orange text-xl mt-0.5 shrink-0"></i>
+                <div class="text-sm text-slate-300">
+                    <span class="font-bold text-white">¿Cómo funciona el rastreo?</span> En Wardog los jugadores pueden cambiarse el nickname libremente, pero su <span class="font-mono text-alert-cyan bg-alert-cyan/10 px-1.5 py-0.5 rounded font-bold">#Código Fijo (XXXX-XXX)</span> es permanente. Si reportas un código ya registrado, tu voto se suma y el nuevo apodo se añade automáticamente a su historial <span class="italic text-slate-200">"Better known as"</span>.
+                </div>
+            </div>
+            <!-- Mini Estadísticas -->
+            <div class="flex items-center gap-4 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-tactical-700/70">
+                <div class="text-center px-3">
+                    <div id="stat-total-suspects" class="font-mono text-xl font-extrabold text-white">0</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400">Códigos en Lista</div>
+                </div>
+                <div class="h-8 w-px bg-tactical-700"></div>
+                <div class="text-center px-3">
+                    <div id="stat-total-votes" class="font-mono text-xl font-extrabold text-alert-red">0</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400">Votos Totales</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BARRA DE BÚSQUEDA Y FILTROS ==================== -->
+        <section class="bg-tactical-900 border border-tactical-700/80 rounded-xl p-4 shadow-xl">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+                <!-- Buscador por Código o Alias -->
+                <div class="md:col-span-6 relative">
+                    <label for="searchInput" class="sr-only">Buscar por Código o Alias</label>
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" oninput="applyFilters()" 
+                        placeholder="Buscar por #Código fijo (ej. K9X2-7M4) o alias en 'Better known as'..." 
+                        class="w-full pl-10 pr-9 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-alert-cyan focus:ring-1 focus:ring-alert-cyan transition-colors">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Filtro por Servidor -->
+                <div class="md:col-span-3 relative">
+                    <label for="serverFilter" class="sr-only">Filtrar por Servidor</label>
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-server text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="serverFilter" onchange="applyFilters()" 
+                        class="w-full pl-9 pr-8 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-alert-cyan appearance-none cursor-pointer">
+                        <option value="ALL">Todos los Servidores</option>
+                        <!-- Opciones generadas dinámicamente -->
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-chevron-down text-slate-500 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Filtro por Tipo de Cheat -->
+                <div class="md:col-span-3 relative">
+                    <label for="cheatFilter" class="sr-only">Filtrar por Sospecha</label>
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-bug text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="cheatFilter" onchange="applyFilters()" 
+                        class="w-full pl-9 pr-8 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-alert-cyan appearance-none cursor-pointer">
+                        <option value="ALL">Todas las Sospechas</option>
+                        <option value="Aimbot">Aimbot / Auto-Aim</option>
+                        <option value="Wallhack / ESP">Wallhack / ESP</option>
+                        <option value="No Recoil / Macro">No Recoil / Script</option>
+                        <option value="Speedhack / Teleport">Speedhack / Movimiento</option>
+                        <option value="Radar Hack">Radar Hack</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-chevron-down text-slate-500 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== LISTADO DEL RANKING (LEADERBOARD) ==================== -->
+        <section class="space-y-3.5">
+            <div class="flex items-center justify-between px-1">
+                <h2 class="font-display text-lg font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-ranking-star text-alert-orange"></i>
+                    <span>Ranking de Sospechosos Más Votados</span>
+                </h2>
+                <span id="resultsCount" class="text-xs font-mono text-slate-400">Mostrando 0 jugadores</span>
+            </div>
+
+            <!-- Contenedor de Tarjetas del Ranking -->
+            <div id="rankingList" class="space-y-3.5">
+                <!-- Renderizado dinámico mediante JS -->
+            </div>
+
+            <!-- Estado Vacío (Cuando no hay coincidencias de búsqueda) -->
+            <div id="emptyState" class="hidden bg-tactical-900/70 border border-tactical-700/80 rounded-xl p-10 text-center">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-tactical-800 text-slate-400 mb-3">
+                    <i class="fa-solid fa-user-secret text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">No se encontraron jugadores con ese filtro</h3>
+                <p class="text-sm text-slate-400 mt-1 max-w-md mx-auto">
+                    Si tienes el código numérico fijo de un jugador sospechoso que aún no está en la lista, puedes registrarlo ahora mismo.
+                </p>
+                <button onclick="openReportModal()" class="mt-4 px-4 py-2 rounded-lg bg-alert-red hover:bg-red-500 text-white text-sm font-semibold transition-colors">
+                    + Registrar Nuevo Sospechoso
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-tactical-800 bg-tactical-950 py-5 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-alert-red"></i>
+                <span>WARDOG COMMUNITY WATCHLIST — Herramienta independiente creada por jugadores.</span>
+            </div>
+            <div>
+                Los datos se almacenan localmente en tu navegador (<span class="font-mono text-slate-400">localStorage</span>).
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL: REPORTAR / VOTAR JUGADOR ==================== -->
+    <div id="reportModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeReportModal()"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-tactical-900 border border-tactical-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                
+                <!-- Header del Modal -->
+                <div class="bg-tactical-850 px-6 py-4 border-b border-tactical-700 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-alert-red/20 border border-alert-red/40 flex items-center justify-center text-alert-red">
+                            <i class="fa-solid fa-crosshairs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display text-xl font-bold uppercase tracking-wide text-white" id="modal-title">
+                                Reportar / Votar Sospechoso
+                            </h3>
+                            <p class="text-xs text-slate-400">El voto se vincula al Código Numérico Fijo del jugador</p>
+                        </div>
+                    </div>
+                    <button onclick="closeReportModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-tactical-700 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Formulario de Reporte -->
+                <form id="reportForm" onsubmit="handleReportSubmit(event)" class="p-6 space-y-4">
+                    
+                    <!-- Aviso dinámico si el código ya existe -->
+                    <div id="existingPlayerNotice" class="hidden p-3 rounded-lg bg-alert-orange/15 border border-alert-orange/40 text-xs text-orange-200 flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-info text-alert-orange mt-0.5"></i>
+                        <div>
+                            <span class="font-bold text-white">¡Este código ya está registrado!</span> Tu voto se sumará a su puntuación y el nombre/servidor que indiques se agregará a su historial <span class="italic">Better known as</span>.
+                        </div>
+                    </div>
+
+                    <!-- Campo 1: Código Alfanumérico Fijo XXXX-XXX (OBLIGATORIO) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="playerCodeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                1. Código Fijo del Jugador (XXXX-XXX) <span class="text-alert-red">*</span>
+                            </label>
+                            <span id="codeFormatBadge" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-tactical-800 text-slate-400 border border-tactical-700">
+                                Formato: XXXX-XXX
+                            </span>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center font-mono font-bold text-alert-cyan">#</span>
+                            <input type="text" id="playerCodeInput" required maxlength="8"
+                                oninput="handleCodeInput(this)"
+                                placeholder="Ej: A7K9-2M4" 
+                                autocomplete="off"
+                                spellcheck="false"
+                                class="w-full pl-8 pr-10 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg font-mono text-base font-bold uppercase tracking-wider text-white placeholder-slate-600 focus:outline-none focus:border-alert-cyan focus:ring-1 focus:ring-alert-cyan transition-colors">
+                            <span id="codeStatusIcon" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500">
+                                <i class="fa-solid fa-hashtag text-xs"></i>
+                            </span>
+                        </div>
+                        <p id="codeHelperText" class="text-[11px] text-slate-500 mt-1">
+                            4 caracteres alfanuméricos, un guion medio y 3 caracteres alfanuméricos (se formatea automáticamente).
+                        </p>
+                    </div>
+
+                    <!-- Campo 2: Better known as / Nombre visto (OBLIGATORIO) -->
+                    <div>
+                        <label for="playerAliasInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            2. Better known as (Nombre con el que lo viste) <span class="text-alert-red">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user-tag text-xs"></i>
+                            </span>
+                            <input type="text" id="playerAliasInput" required maxlength="32"
+                                placeholder="Ej: xX_SombraKill_Xx" 
+                                class="w-full pl-9 pr-4 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-alert-orange focus:ring-1 focus:ring-alert-orange">
+                        </div>
+                    </div>
+
+                    <!-- Campo 3: Servidor (OBLIGATORIO) -->
+                    <div>
+                        <label for="playerServerInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            3. Servidor donde estaba jugando <span class="text-alert-red">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <select id="playerServerSelect" onchange="toggleCustomServer(this.value)" 
+                                class="w-full px-3 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-white focus:outline-none focus:border-alert-orange">
+                                <option value="SA Oficial #1">SA Oficial #1</option>
+                                <option value="SA Oficial #2">SA Oficial #2</option>
+                                <option value="SA Hardcore #1">SA Hardcore #1</option>
+                                <option value="NA East #1">NA East #1</option>
+                                <option value="NA West #2">NA West #2</option>
+                                <option value="EU Central #1">EU Central #1</option>
+                                <option value="CUSTOM">Otro servidor (escribir)...</option>
+                            </select>
+                            <input type="text" id="customServerInput" placeholder="Nombre del servidor..." 
+                                class="hidden w-full px-3 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-alert-orange">
+                        </div>
+                    </div>
+
+                    <!-- Campo 4: Tipo de Sospecha / Cheat (OPCIONAL) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label for="cheatTypeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                Sospecha Principal (Opcional)
+                            </label>
+                            <select id="cheatTypeInput" 
+                                class="w-full px-3 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-slate-500">
+                                <option value="Aimbot">Aimbot / Auto-Aim</option>
+                                <option value="Wallhack / ESP">Wallhack / ESP</option>
+                                <option value="No Recoil / Macro">No Recoil / Script</option>
+                                <option value="Speedhack / Teleport">Speedhack / Movimiento</option>
+                                <option value="Radar Hack">Radar Hack</option>
+                                <option value="Otro / Múltiples">Otro / Múltiples Hacks</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="evidenceNoteInput" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                Nota o Clip (Opcional)
+                            </label>
+                            <input type="text" id="evidenceNoteInput" maxlength="90"
+                                placeholder="Ej: Headshots tras humo a 300m" 
+                                class="w-full px-3 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-slate-500">
+                        </div>
+                    </div>
+
+                    <!-- Botones Footer Modal -->
+                    <div class="pt-4 border-t border-tactical-800 flex items-center justify-end gap-3">
+                        <button type="button" onclick="closeReportModal()" class="px-4 py-2.5 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 text-sm font-medium transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-alert-red to-alert-crimson hover:from-red-500 hover:to-alert-red text-white font-bold text-sm shadow-neon-red transition-all flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-check"></i>
+                            <span id="submitBtnText">Confirmar Voto / Reporte</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFICACIÓN TOAST FLOTANTE ==================== -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ==================== LÓGICA JAVASCRIPT ==================== -->
+    <script>
+        // Clave para persistencia en localStorage (v2 para formato XXXX-XXX)
+        const STORAGE_KEY = 'wardog_watchlist_data_v2_alnum';
+        const VOTED_SESSION_KEY = 'wardog_user_voted_codes_v2_alnum';
+        const PLAYER_CODE_REGEX = /^[A-Z0-9]{4}-[A-Z0-9]{3}$/;
+
+        // Datos de ejemplo realistas precargados para Wardog con códigos XXXX-XXX
+        const INITIAL_MOCK_DATA = [
+            {
+                code: "K9X2-7M4",
+                votes: 47,
+                aliases: ["GhostReaper_AR", "SinNombre123", "KIller_Pro99", "TacticalWolf"],
+                servers: ["SA Oficial #1", "SA Hardcore #1"],
+                cheats: ["Aimbot", "Wallhack / ESP"],
+                lastNote: "Dispara a través de paredes en zona industrial sin tener visión.",
+                lastUpdated: "Hace 18 min"
+            },
+            {
+                code: "4B8N-Q12",
+                votes: 34,
+                aliases: ["ViperStrike", "El_Inmortal", "User_9941"],
+                servers: ["SA Oficial #2", "SA Oficial #1"],
+                cheats: ["No Recoil / Macro", "Wallhack / ESP"],
+                lastNote: "Cero retroceso con AK a más de 200 metros en ráfaga completa.",
+                lastUpdated: "Hace 1 hora"
+            },
+            {
+                code: "R7P3-9W0",
+                votes: 26,
+                aliases: ["ShadowWalker", "xX_NoMercy_Xx", "BalaPerdida"],
+                servers: ["NA East #1", "SA Oficial #1"],
+                cheats: ["Speedhack / Teleport"],
+                lastNote: "Se mueve al doble de velocidad cuando lo flanquean.",
+                lastUpdated: "Hace 3 horas"
+            },
+            {
+                code: "V2D6-5H8",
+                votes: 19,
+                aliases: ["HeadshotMachine", "11111111"],
+                servers: ["SA Hardcore #1"],
+                cheats: ["Aimbot"],
+                lastNote: "Gira 180 grados instantáneamente y conecta puro headshot.",
+                lastUpdated: "Hace 5 horas"
+            },
+            {
+                code: "M1L9-3C4",
+                votes: 12,
+                aliases: ["RadarKing", "OjoDeHalcon", "Cazador_UY"],
+                servers: ["SA Oficial #2", "NA East #1"],
+                cheats: ["Radar Hack", "Wallhack / ESP"],
+                lastNote: "Sabe exactamente en qué arbusto o habitación estás escondido sin hacer ruido.",
+                lastUpdated: "Ayer"
+            },
+            {
+                code: "Z4R8-7Q1",
+                votes: 7,
+                aliases: ["ZorroTactico"],
+                servers: ["EU Central #1"],
+                cheats: ["No Recoil / Macro"],
+                lastNote: "Macro evidente en armas semiautomáticas.",
+                lastUpdated: "Hace 2 días"
+            }
+        ];
+
+        // Normaliza cualquier entrada de código al formato XXXX-XXX en mayúsculas
+        function formatWardogCode(rawValue) {
+            if (!rawValue) return '';
+            // Eliminar el símbolo '#' si el usuario lo pegó y quitar todo lo que no sea alfanumérico
+            const cleaned = String(rawValue)
+                .toUpperCase()
+                .replace(/^#/, '')
+                .replace(/[^A-Z0-9]/g, '')
+                .slice(0, 7);
+
+            if (cleaned.length > 4) {
+                return `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
+            }
+            return cleaned;
+        }
+
+        // Estado en memoria
+        let playersList = [];
+        let userVotedCodes = new Set();
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        function initApp() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    playersList = JSON.parse(savedData);
+                } catch (e) {
+                    playersList = [...INITIAL_MOCK_DATA];
+                }
+            } else {
+                playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
+                saveData();
+            }
+
+            const savedVotes = localStorage.getItem(VOTED_SESSION_KEY);
+            if (savedVotes) {
+                try {
+                    userVotedCodes = new Set(JSON.parse(savedVotes));
+                } catch (e) {
+                    userVotedCodes = new Set();
+                }
+            }
+
+            populateServerFilter();
+            renderRanking();
+        }
+
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(playersList));
+            localStorage.setItem(VOTED_SESSION_KEY, JSON.stringify([...userVotedCodes]));
+        }
+
+        // Restaurar datos iniciales de ejemplo
+        function resetDemoData() {
+            playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
+            userVotedCodes.clear();
+            saveData();
+            populateServerFilter();
+            renderRanking();
+            showToast("Datos de demostración restaurados correctamente.", "info");
+        }
+
+        // Rellenar dinámicamente el filtro de servidores según los registros existentes
+        function populateServerFilter() {
+            const serverSelect = document.getElementById('serverFilter');
+            const currentVal = serverSelect.value;
+            const allServers = new Set();
+
+            playersList.forEach(player => {
+                player.servers.forEach(srv => allServers.add(srv));
+            });
+
+            serverSelect.innerHTML = '<option value="ALL">Todos los Servidores</option>';
+            Array.from(allServers).sort().forEach(srv => {
+                const option = document.createElement('option');
+                option.value = srv;
+                option.textContent = srv;
+                serverSelect.appendChild(option);
+            });
+
+            if (Array.from(allServers).includes(currentVal)) {
+                serverSelect.value = currentVal;
+            }
+        }
+
+        // Actualizar estadísticas globales superiores
+        function updateGlobalStats() {
+            const totalSuspects = playersList.length;
+            const totalVotes = playersList.reduce((acc, p) => acc + p.votes, 0);
+
+            document.getElementById('stat-total-suspects').textContent = totalSuspects;
+            document.getElementById('stat-total-votes').textContent = totalVotes;
+        }
+
+        // Renderizar el Ranking completo ordenado por votos
+        function renderRanking() {
+            updateGlobalStats();
+
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const selectedServer = document.getElementById('serverFilter').value;
+            const selectedCheat = document.getElementById('cheatFilter').value;
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            if (searchTerm.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            // 1. Ordenar de mayor a menor cantidad de votos
+            const sortedPlayers = [...playersList].sort((a, b) => b.votes - a.votes);
+
+            // 2. Filtrar según búsqueda (con o sin guion), servidor y tipo de cheat
+            const normalizedSearchAlnum = searchTerm.replace(/[^a-z0-9]/g, '');
+
+            const filteredPlayers = sortedPlayers.filter(player => {
+                const codeLower = player.code.toLowerCase();
+                const codeNoDash = codeLower.replace('-', '');
+
+                const matchesCode = codeLower.includes(searchTerm) || 
+                    (normalizedSearchAlnum.length > 0 && codeNoDash.includes(normalizedSearchAlnum));
+                const matchesAlias = player.aliases.some(alias => alias.toLowerCase().includes(searchTerm));
+                const matchesSearch = !searchTerm || matchesCode || matchesAlias;
+
+                const matchesServer = selectedServer === 'ALL' || player.servers.includes(selectedServer);
+                const matchesCheat = selectedCheat === 'ALL' || player.cheats.includes(selectedCheat);
+
+                return matchesSearch && matchesServer && matchesCheat;
+            });
+
+            const container = document.getElementById('rankingList');
+            const emptyState = document.getElementById('emptyState');
+            const resultsCount = document.getElementById('resultsCount');
+
+            resultsCount.textContent = `Mostrando ${filteredPlayers.length} de ${playersList.length} jugadores`;
+
+            if (filteredPlayers.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = '';
+
+            filteredPlayers.forEach((player) => {
+                // Calcular posición real en el ranking global
+                const globalRank = sortedPlayers.findIndex(p => p.code === player.code) + 1;
+                const hasVoted = userVotedCodes.has(player.code);
+
+                // Estilos especiales para el Top 3
+                let rankBadgeClass = "bg-tactical-800 text-slate-300 border-tactical-700";
+                let cardBorderClass = "border-tactical-700/80 hover:border-tactical-600";
+                let threatLabel = "SOSPECHOSO";
+                let threatColor = "text-alert-amber bg-alert-amber/10 border-alert-amber/30";
+
+                if (globalRank === 1) {
+                    rankBadgeClass = "bg-gradient-to-br from-alert-red to-red-800 text-white border-alert-red shadow-neon-red";
+                    cardBorderClass = "border-alert-red/60 animate-alert-border";
+                    threatLabel = "AMENAZA CRÍTICA #1";
+                    threatColor = "text-alert-red bg-alert-red/15 border-alert-red/40";
+                } else if (globalRank === 2) {
+                    rankBadgeClass = "bg-gradient-to-br from-alert-orange to-orange-700 text-white border-alert-orange";
+                    cardBorderClass = "border-alert-orange/50";
+                    threatLabel = "ALTO RIESGO #2";
+                    threatColor = "text-alert-orange bg-alert-orange/15 border-alert-orange/40";
+                } else if (globalRank === 3) {
+                    rankBadgeClass = "bg-gradient-to-br from-amber-500 to-yellow-700 text-white border-amber-400";
+                    cardBorderClass = "border-amber-500/40";
+                    threatLabel = "ALTO RIESGO #3";
+                    threatColor = "text-amber-400 bg-amber-500/15 border-amber-500/40";
+                }
+
+                // Renderizar badges de Aliases ("Better known as")
+                const aliasesHtml = player.aliases.map((alias, idx) => {
+                    // El más reciente o principal tiene ligero énfasis
+                    const isLatest = idx === 0;
+                    return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${isLatest ? 'bg-slate-800 text-white border border-slate-600' : 'bg-tactical-950/90 text-slate-300 border border-tactical-700/80'}">
+                        <i class="fa-solid fa-user-secret text-[10px] ${isLatest ? 'text-alert-orange' : 'text-slate-500'}"></i>
+                        ${escapeHtml(alias)}
+                    </span>`;
+                }).join('');
+
+                // Renderizar badges de Servidores
+                const serversHtml = player.servers.map(server => `
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-tactical-800/90 text-alert-cyan border border-alert-cyan/25">
+                        <span class="w-1.5 h-1.5 rounded-full bg-alert-cyan"></span>
+                        ${escapeHtml(server)}
+                    </span>
+                `).join('');
+
+                // Renderizar tags de tipos de cheats reportados
+                const cheatsHtml = player.cheats.map(cheat => `
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-alert-red/10 text-red-300 border border-alert-red/25">
+                        ${escapeHtml(cheat)}
+                    </span>
+                `).join('');
+
+                const card = document.createElement('article');
+                card.className = `bg-tactical-900/95 border ${cardBorderClass} rounded-xl p-4 sm:p-5 shadow-lg transition-all duration-200 relative overflow-hidden`;
+                
+                card.innerHTML = `
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        
+                        <!-- BLOQUE IZQUIERDO: Posición + Código Fijo + Better Known As + Servidores -->
+                        <div class="flex items-start gap-3.5 sm:gap-4 flex-1 min-w-0">
+                            
+                            <!-- Número de Ranking (#1, #2...) -->
+                            <div class="flex flex-col items-center justify-center w-12 h-14 sm:w-14 sm:h-16 rounded-xl border ${rankBadgeClass} shrink-0 font-display">
+                                <span class="text-[10px] uppercase tracking-widest opacity-80 leading-none">TOP</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold leading-tight">#${globalRank}</span>
+                            </div>
+
+                            <!-- Información Estructurada del Jugador -->
+                            <div class="flex-1 min-w-0 space-y-2.5">
+                                
+                                <!-- 1. PRIMERO Y MÁS DESTACADO: CÓDIGO FIJO (XXXX-XXX) -->
+                                <div class="flex flex-wrap items-center gap-2.5">
+                                    <div class="inline-flex items-center gap-2 bg-tactical-950 border border-tactical-700 px-3 py-1 rounded-lg">
+                                        <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Código Fijo:</span>
+                                        <span class="font-mono text-lg sm:text-xl font-extrabold text-white tracking-wider select-all">#${escapeHtml(player.code)}</span>
+                                        <button onclick="copyPlayerCode('${escapeHtml(player.code)}')" title="Copiar código fijo" class="text-slate-400 hover:text-alert-cyan transition-colors ml-1 p-1">
+                                            <i class="fa-regular fa-copy text-xs"></i>
+                                        </button>
+                                    </div>
+
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider border ${threatColor}">
+                                        ${threatLabel}
+                                    </span>
+
+                                    <span class="text-[11px] text-slate-500 hidden sm:inline">
+                                        <i class="fa-regular fa-clock mr-1"></i>${escapeHtml(player.lastUpdated)}
+                                    </span>
+                                </div>
+
+                                <!-- 2. DEBAJO: BETTER KNOWN AS (Aliases vistos por los votantes) -->
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-alert-orange mr-1 flex items-center gap-1">
+                                        <i class="fa-solid fa-masks-theater"></i>
+                                        Better known as:
+                                    </span>
+                                    ${aliasesHtml}
+                                </div>
+
+                                <!-- 3. SERVIDOR(ES) DONDE FUE VISTO JUGANDO -->
+                                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                                    <span class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-server text-slate-500"></i>
+                                        Servidor:
+                                    </span>
+                                    ${serversHtml}
+                                    
+                                    <!-- Separador y Tags de Sospechas -->
+                                    <span class="hidden sm:inline text-tactical-700">|</span>
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        ${cheatsHtml}
+                                    </div>
+                                </div>
+
+                                <!-- Nota de evidencia reciente (si existe) -->
+                                ${player.lastNote ? `
+                                    <p class="text-xs text-slate-400 bg-tactical-950/60 border-l-2 border-tactical-700 pl-2.5 py-1 rounded-r italic">
+                                        "${escapeHtml(player.lastNote)}"
+                                    </p>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <!-- BLOQUE DERECHO: Contador de Votos y Botones de Acción -->
+                        <div class="flex sm:flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-tactical-800 lg:pl-5 shrink-0">
+                            
+                            <!-- Contador de Reportes / Votos -->
+                            <div class="flex items-center lg:flex-col gap-2 lg:gap-0 text-center">
+                                <span class="font-mono text-2xl sm:text-3xl font-extrabold ${globalRank === 1 ? 'text-alert-red' : 'text-white'} leading-none">
+                                    ${player.votes}
+                                </span>
+                                <span class="text-[11px] uppercase tracking-widest font-semibold text-slate-400">
+                                    ${player.votes === 1 ? 'Voto / Reporte' : 'Votos / Reportes'}
+                                </span>
+                            </div>
+
+                            <!-- Botones de Voto Rápido y Añadir Alias/Servidor -->
+                            <div class="flex items-center gap-2">
+                                <button onclick="quickVote('${escapeHtml(player.code)}')" 
+                                    class="px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer
+                                    ${hasVoted 
+                                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30' 
+                                        : 'bg-alert-red hover:bg-red-500 text-white shadow-neon-red active:scale-95'}">
+                                    <i class="fa-solid ${hasVoted ? 'fa-check' : 'fa-plus'}"></i>
+                                    <span>${hasVoted ? 'Votado (+1)' : '+1 Votar'}</span>
+                                </button>
+
+                                <button onclick="openReportModalWithCode('${escapeHtml(player.code)}')" 
+                                    title="Votar y añadir otro nombre (Better known as) o servidor donde lo viste"
+                                    class="px-3 py-2 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-200 border border-tactical-600 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer">
+                                    <i class="fa-solid fa-user-plus text-alert-orange"></i>
+                                    <span class="hidden sm:inline">+ Alias / Info</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Aplicar filtros desde los inputs
+        function applyFilters() {
+            renderRanking();
+        }
+
+        // Limpiar barra de búsqueda
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+
+        // Voto rápido (+1 directo)
+        function quickVote(code) {
+            const player = playersList.find(p => p.code === code);
+            if (!player) return;
+
+            player.votes += 1;
+            player.lastUpdated = "Ahora mismo";
+            userVotedCodes.add(code);
+            
+            saveData();
+            renderRanking();
+            showToast(`+1 voto registrado para el código #${code} (${player.aliases[0]})`, "success");
+        }
+
+        // Abrir modal vacío
+        function openReportModal() {
+            document.getElementById('reportForm').reset();
+            document.getElementById('customServerInput').classList.add('hidden');
+            document.getElementById('existingPlayerNotice').classList.add('hidden');
+            document.getElementById('submitBtnText').textContent = "Confirmar Voto / Reporte";
+            resetCodeValidationUI();
+            document.getElementById('reportModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('playerCodeInput').focus(), 100);
+        }
+
+        // Abrir modal pre-rellenando el Código Fijo (para añadir nuevo alias o servidor)
+        function openReportModalWithCode(code) {
+            openReportModal();
+            const codeInput = document.getElementById('playerCodeInput');
+            codeInput.value = formatWardogCode(code);
+            handleCodeInput(codeInput);
+            setTimeout(() => document.getElementById('playerAliasInput').focus(), 100);
+        }
+
+        // Cerrar modal
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.add('hidden');
+        }
+
+        // Restablecer estilos visuales de validación del input de código
+        function resetCodeValidationUI() {
+            const input = document.getElementById('playerCodeInput');
+            const badge = document.getElementById('codeFormatBadge');
+            const icon = document.getElementById('codeStatusIcon');
+            const helper = document.getElementById('codeHelperText');
+
+            input.classList.remove('border-emerald-500', 'focus:border-emerald-500', 'focus:ring-emerald-500', 'border-alert-amber', 'focus:border-alert-amber');
+            input.classList.add('border-tactical-700', 'focus:border-alert-cyan', 'focus:ring-alert-cyan');
+
+            badge.textContent = 'Formato: XXXX-XXX';
+            badge.className = 'text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-tactical-800 text-slate-400 border border-tactical-700';
+
+            icon.innerHTML = '<i class="fa-solid fa-hashtag text-xs"></i>';
+            icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500';
+
+            helper.textContent = '4 caracteres alfanuméricos, un guion medio y 3 caracteres alfanuméricos (se formatea automáticamente).';
+            helper.className = 'text-[11px] text-slate-500 mt-1';
+        }
+
+        // Formatear y validar en tiempo real el input del Código Fijo (XXXX-XXX)
+        function handleCodeInput(inputEl) {
+            const formatted = formatWardogCode(inputEl.value);
+            inputEl.value = formatted;
+
+            const badge = document.getElementById('codeFormatBadge');
+            const icon = document.getElementById('codeStatusIcon');
+            const helper = document.getElementById('codeHelperText');
+
+            if (!formatted) {
+                resetCodeValidationUI();
+                checkExistingCode('');
+                return;
+            }
+
+            const isValid = PLAYER_CODE_REGEX.test(formatted);
+
+            if (isValid) {
+                inputEl.classList.remove('border-tactical-700', 'border-alert-amber', 'focus:border-alert-cyan', 'focus:ring-alert-cyan');
+                inputEl.classList.add('border-emerald-500', 'focus:border-emerald-500', 'focus:ring-emerald-500');
+
+                badge.textContent = '✓ Formato Válido';
+                badge.className = 'text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/40';
+
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-sm"></i>';
+                icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-emerald-400';
+
+                helper.textContent = `Código listo para registrar: #${formatted}`;
+                helper.className = 'text-[11px] text-emerald-400 mt-1 font-medium';
+            } else {
+                const rawLen = formatted.replace('-', '').length;
+                const remaining = 7 - rawLen;
+
+                inputEl.classList.remove('border-tactical-700', 'border-emerald-500', 'focus:border-emerald-500', 'focus:ring-emerald-500');
+                inputEl.classList.add('border-alert-amber', 'focus:border-alert-amber');
+
+                badge.textContent = `Faltan ${remaining} car.`;
+                badge.className = 'text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-alert-amber/15 text-alert-amber border border-alert-amber/40';
+
+                icon.innerHTML = '<i class="fa-solid fa-pen-to-square text-xs"></i>';
+                icon.className = 'absolute inset-y-0 right-0 pr-3.5 flex items-center text-alert-amber';
+
+                helper.textContent = `Completa los 7 caracteres alfanuméricos (ej. A7K9-2M4). Faltan ${remaining}.`;
+                helper.className = 'text-[11px] text-alert-amber mt-1';
+            }
+
+            checkExistingCode(formatted);
+        }
+
+        // Verificar en tiempo real si el código ingresado ya existe en el ranking
+        function checkExistingCode(codeValue) {
+            const cleanCode = formatWardogCode(codeValue);
+            const existing = PLAYER_CODE_REGEX.test(cleanCode) 
+                ? playersList.find(p => p.code === cleanCode) 
+                : null;
+            const notice = document.getElementById('existingPlayerNotice');
+            const submitBtn = document.getElementById('submitBtnText');
+
+            if (existing) {
+                notice.classList.remove('hidden');
+                submitBtn.textContent = `Sumar +1 Voto a #${cleanCode}`;
+            } else {
+                notice.classList.add('hidden');
+                submitBtn.textContent = "Registrar y Votar Sospechoso";
+            }
+        }
+
+        // Mostrar input de servidor personalizado si elige "Otro"
+        function toggleCustomServer(val) {
+            const customInput = document.getElementById('customServerInput');
+            if (val === 'CUSTOM') {
+                customInput.classList.remove('hidden');
+                customInput.required = true;
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                customInput.required = false;
+            }
+        }
+
+        // Procesar envío del formulario de reporte/voto
+        function handleReportSubmit(event) {
+            event.preventDefault();
+
+            const rawCode = formatWardogCode(document.getElementById('playerCodeInput').value);
+            const rawAlias = document.getElementById('playerAliasInput').value.trim();
+            const serverSelectVal = document.getElementById('playerServerSelect').value;
+            const customServerVal = document.getElementById('customServerInput').value.trim();
+            const cheatType = document.getElementById('cheatTypeInput').value;
+            const note = document.getElementById('evidenceNoteInput').value.trim();
+
+            // Validación estricta del formato XXXX-XXX
+            if (!PLAYER_CODE_REGEX.test(rawCode)) {
+                showToast("El código debe tener exactamente 4 caracteres alfanuméricos, un guion y 3 alfanuméricos (Ej: A7K9-2M4).", "error");
+                document.getElementById('playerCodeInput').focus();
+                return;
+            }
+            if (!rawAlias) {
+                showToast("Debes ingresar el nombre con el que lo viste.", "error");
+                return;
+            }
+
+            const finalServer = serverSelectVal === 'CUSTOM' ? (customServerVal || 'Servidor Privado') : serverSelectVal;
+
+            // Buscar si el Código Fijo ya existe en la lista
+            const existingPlayer = playersList.find(p => p.code === rawCode);
+
+            if (existingPlayer) {
+                // Sumar voto
+                existingPlayer.votes += 1;
+                existingPlayer.lastUpdated = "Ahora mismo";
+
+                // Agregar el alias al principio de "Better known as" si no existe (case-insensitive)
+                const aliasExists = existingPlayer.aliases.some(a => a.toLowerCase() === rawAlias.toLowerCase());
+                if (!aliasExists) {
+                    existingPlayer.aliases.unshift(rawAlias);
+                }
+
+                // Agregar servidor si no estaba registrado
+                if (!existingPlayer.servers.includes(finalServer)) {
+                    existingPlayer.servers.push(finalServer);
+                }
+
+                // Agregar tipo de cheat si no estaba
+                if (cheatType && !existingPlayer.cheats.includes(cheatType)) {
+                    existingPlayer.cheats.push(cheatType);
+                }
+
+                // Actualizar nota si escribió una nueva
+                if (note) {
+                    existingPlayer.lastNote = note;
+                }
+
+                userVotedCodes.add(rawCode);
+                showToast(`¡Voto sumado! El código #${rawCode} ahora tiene ${existingPlayer.votes} votos.`, "success");
+            } else {
+                // Crear nuevo registro en el ranking
+                const newPlayer = {
+                    code: rawCode,
+                    votes: 1,
+                    aliases: [rawAlias],
+                    servers: [finalServer],
+                    cheats: cheatType ? [cheatType] : ["Sospechoso"],
+                    lastNote: note || "",
+                    lastUpdated: "Ahora mismo"
+                };
+
+                playersList.push(newPlayer);
+                userVotedCodes.add(rawCode);
+                showToast(`Nuevo sospechoso #${rawCode} (${rawAlias}) añadido al ranking.`, "success");
+            }
+
+            saveData();
+            populateServerFilter();
+            renderRanking();
+            closeReportModal();
+        }
+
+        // Copiar código numérico al portapapeles (compatible con iframes)
+        function copyPlayerCode(code) {
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast(`Código #${code} copiado al portapapeles.`, "info");
+            } catch (err) {
+                showToast("No se pudo copiar el código.", "error");
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // Sistema de notificaciones Toast (sin usar alert())
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-tactical-850 border-alert-cyan text-white";
+            let icon = "fa-circle-info text-alert-cyan";
+
+            if (type === "success") {
+                bgClass = "bg-tactical-850 border-emerald-500 text-white";
+                icon = "fa-circle-check text-emerald-400";
+            } else if (type === "error") {
+                bgClass = "bg-tactical-850 border-alert-red text-white";
+                icon = "fa-triangle-exclamation text-alert-red";
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border-l-4 shadow-2xl text-xs sm:text-sm font-medium transform transition-all duration-300 translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Animación de entrada
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            // Auto-eliminar después de 3.5 segundos
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Utilidad para prevenir XSS en entradas de usuario
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeReportModal();
+            }
+        });
+    </script>
+</body>
+</html>
