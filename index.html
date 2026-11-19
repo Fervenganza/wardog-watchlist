@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WARDOG WATCHLIST // Registro Comunitario Anti-Cheats</title>
+    <meta name="description" content="Ranking comunitario de códigos fijos (XXXX-XXX) de jugadores sospechosos de hacks o cheats en Wardog.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter & JetBrains Mono & Rajdhani para toque táctico -->
+    <!-- Supabase JS SDK v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts: Inter, JetBrains Mono & Rajdhani -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome para iconos tácticos -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -53,7 +57,6 @@
     </script>
 
     <style>
-        /* Estilos personalizados tácticos y scrollbars */
         body {
             background-color: #07090d;
             background-image: 
@@ -64,20 +67,10 @@
             background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0d1117;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #273244;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff2a4b;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #273244; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff2a4b; }
 
         @keyframes pulse-border {
             0%, 100% { border-color: rgba(255, 42, 75, 0.5); }
@@ -85,10 +78,6 @@
         }
         .animate-alert-border {
             animation: pulse-border 2.5s infinite;
-        }
-
-        .clip-corner {
-            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
         }
     </style>
 </head>
@@ -108,25 +97,28 @@
                         </span>
                     </div>
                     <div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-wider uppercase text-white leading-none">
                                 WARDOG <span class="text-alert-red">WATCHLIST</span>
                             </h1>
-                            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-alert-red/15 text-alert-red border border-alert-red/30">
-                                LIVE INTEL
-                            </span>
+                            <!-- Indicador de Estado de Conexión -->
+                            <button onclick="openConfigModal()" id="dbStatusBadge" title="Estado de conexión con Supabase"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40 hover:bg-amber-500/25 transition-colors cursor-pointer">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                <span>CONECTANDO...</span>
+                            </button>
                         </div>
                         <p class="text-xs text-slate-400 mt-0.5">
-                            Base de datos comunitaria de <span class="text-slate-200 font-medium">Códigos Fijos (XXXX-XXX)</span> sospechosos de Cheats / Hacks
+                            Ranking comunitario de <span class="text-slate-200 font-medium">Códigos Fijos (XXXX-XXX)</span> sospechosos de Cheats / Hacks
                         </p>
                     </div>
                 </div>
 
                 <!-- Botones de Acción Principal -->
                 <div class="flex items-center gap-2.5 self-end sm:self-auto">
-                    <button onclick="resetDemoData()" title="Restaurar datos iniciales de ejemplo" class="px-3 py-2.5 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 hover:text-white border border-tactical-700 text-xs font-medium transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-left"></i>
-                        <span class="hidden sm:inline">Reset Demo</span>
+                    <button onclick="refreshRankingFromSource()" id="refreshBtn" title="Actualizar ranking" class="px-3 py-2.5 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 hover:text-white border border-tactical-700 text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i id="refreshIcon" class="fa-solid fa-arrows-rotate"></i>
+                        <span class="hidden md:inline">Actualizar</span>
                     </button>
                     <button onclick="openReportModal()" class="px-4 py-2.5 rounded-lg bg-gradient-to-r from-alert-red to-alert-crimson hover:from-red-500 hover:to-alert-red text-white font-semibold text-sm shadow-neon-red transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -140,12 +132,27 @@
     <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
+        <!-- Banner de Aviso (solo visible si faltan las claves de Supabase) -->
+        <div id="setupBanner" class="hidden bg-gradient-to-r from-tactical-900 via-tactical-850 to-tactical-900 border border-alert-cyan/40 rounded-xl p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-lg bg-alert-cyan/15 border border-alert-cyan/40 flex items-center justify-center text-alert-cyan shrink-0 mt-0.5">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <div class="text-xs sm:text-sm text-slate-300">
+                    <span class="font-bold text-white">Faltan tus claves de Supabase:</span> Abre este <code class="font-mono text-alert-cyan">index.html</code> y pega tu <span class="font-mono text-alert-cyan">SUPABASE_URL</span> y <span class="font-mono text-alert-cyan">SUPABASE_ANON_KEY</span> (o haz clic en Configurar) para activar la base de datos global.
+                </div>
+            </div>
+            <button onclick="openConfigModal()" class="px-4 py-2 rounded-lg bg-alert-cyan/15 hover:bg-alert-cyan/25 text-alert-cyan border border-alert-cyan/40 text-xs font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer">
+                Configurar Claves
+            </button>
+        </div>
+
         <!-- Banner Informativo sobre el Sistema de Código Fijo -->
         <div class="bg-tactical-900/90 border-l-4 border-alert-orange rounded-r-xl p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-start gap-3">
                 <i class="fa-solid fa-fingerprint text-alert-orange text-xl mt-0.5 shrink-0"></i>
                 <div class="text-sm text-slate-300">
-                    <span class="font-bold text-white">¿Cómo funciona el rastreo?</span> En Wardog los jugadores pueden cambiarse el nickname libremente, pero su <span class="font-mono text-alert-cyan bg-alert-cyan/10 px-1.5 py-0.5 rounded font-bold">#Código Fijo (XXXX-XXX)</span> es permanente. Si reportas un código ya registrado, tu voto se suma y el nuevo apodo se añade automáticamente a su historial <span class="italic text-slate-200">"Better known as"</span>.
+                    <span class="font-bold text-white">Rastreo por Código Permanente:</span> En Wardog los jugadores cambian su nickname, pero su <span class="font-mono text-alert-cyan bg-alert-cyan/10 px-1.5 py-0.5 rounded font-bold">#Código Fijo (XXXX-XXX)</span> nunca cambia. Si reportas un código ya listado, tu voto se suma y el nuevo apodo se añade a su historial <span class="italic text-slate-200">"Better known as"</span>.
                 </div>
             </div>
             <!-- Mini Estadísticas -->
@@ -165,7 +172,6 @@
         <!-- ==================== BARRA DE BÚSQUEDA Y FILTROS ==================== -->
         <section class="bg-tactical-900 border border-tactical-700/80 rounded-xl p-4 shadow-xl">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5">
-                <!-- Buscador por Código o Alias -->
                 <div class="md:col-span-6 relative">
                     <label for="searchInput" class="sr-only">Buscar por Código o Alias</label>
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -179,7 +185,6 @@
                     </button>
                 </div>
 
-                <!-- Filtro por Servidor -->
                 <div class="md:col-span-3 relative">
                     <label for="serverFilter" class="sr-only">Filtrar por Servidor</label>
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -188,14 +193,12 @@
                     <select id="serverFilter" onchange="applyFilters()" 
                         class="w-full pl-9 pr-8 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-alert-cyan appearance-none cursor-pointer">
                         <option value="ALL">Todos los Servidores</option>
-                        <!-- Opciones generadas dinámicamente -->
                     </select>
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         <i class="fa-solid fa-chevron-down text-slate-500 text-xs"></i>
                     </div>
                 </div>
 
-                <!-- Filtro por Tipo de Cheat -->
                 <div class="md:col-span-3 relative">
                     <label for="cheatFilter" class="sr-only">Filtrar por Sospecha</label>
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -224,25 +227,29 @@
                     <i class="fa-solid fa-ranking-star text-alert-orange"></i>
                     <span>Ranking de Sospechosos Más Votados</span>
                 </h2>
-                <span id="resultsCount" class="text-xs font-mono text-slate-400">Mostrando 0 jugadores</span>
+                <span id="resultsCount" class="text-xs font-mono text-slate-400">Cargando registros...</span>
+            </div>
+
+            <!-- Estado de Carga -->
+            <div id="loadingState" class="hidden bg-tactical-900/70 border border-tactical-700/80 rounded-xl p-10 text-center">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-alert-cyan mb-3"></i>
+                <p class="text-sm text-slate-300 font-medium">Conectando con la base de datos de Wardog Watchlist...</p>
             </div>
 
             <!-- Contenedor de Tarjetas del Ranking -->
-            <div id="rankingList" class="space-y-3.5">
-                <!-- Renderizado dinámico mediante JS -->
-            </div>
+            <div id="rankingList" class="space-y-3.5"></div>
 
-            <!-- Estado Vacío (Cuando no hay coincidencias de búsqueda) -->
+            <!-- Estado Vacío -->
             <div id="emptyState" class="hidden bg-tactical-900/70 border border-tactical-700/80 rounded-xl p-10 text-center">
                 <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-tactical-800 text-slate-400 mb-3">
                     <i class="fa-solid fa-user-secret text-2xl"></i>
                 </div>
-                <h3 class="text-lg font-bold text-white">No se encontraron jugadores con ese filtro</h3>
+                <h3 class="text-lg font-bold text-white">No hay registros que coincidan</h3>
                 <p class="text-sm text-slate-400 mt-1 max-w-md mx-auto">
-                    Si tienes el código numérico fijo de un jugador sospechoso que aún no está en la lista, puedes registrarlo ahora mismo.
+                    Si tienes el código fijo (XXXX-XXX) de un jugador sospechoso que aún no está en la lista, regístralo ahora mismo.
                 </p>
-                <button onclick="openReportModal()" class="mt-4 px-4 py-2 rounded-lg bg-alert-red hover:bg-red-500 text-white text-sm font-semibold transition-colors">
-                    + Registrar Nuevo Sospechoso
+                <button onclick="openReportModal()" class="mt-4 px-4 py-2 rounded-lg bg-alert-red hover:bg-red-500 text-white text-sm font-semibold transition-colors cursor-pointer">
+                    + Registrar Primer Sospechoso
                 </button>
             </div>
         </section>
@@ -255,21 +262,20 @@
                 <i class="fa-solid fa-shield-halved text-alert-red"></i>
                 <span>WARDOG COMMUNITY WATCHLIST — Herramienta independiente creada por jugadores.</span>
             </div>
-            <div>
-                Los datos se almacenan localmente en tu navegador (<span class="font-mono text-slate-400">localStorage</span>).
+            <div class="flex items-center gap-3">
+                <span>Base de datos: <span class="font-mono text-slate-400">Supabase Cloud</span></span>
+                <button onclick="openConfigModal()" class="text-slate-600 hover:text-slate-400 underline cursor-pointer">Configurar DB</button>
             </div>
         </div>
     </footer>
 
-    <!-- ==================== MODAL: REPORTAR / VOTAR JUGADOR ==================== -->
+    <!-- ==================== MODAL 1: REPORTAR / VOTAR JUGADOR ==================== -->
     <div id="reportModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeReportModal()"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-2xl bg-tactical-900 border border-tactical-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 
-                <!-- Header del Modal -->
                 <div class="bg-tactical-850 px-6 py-4 border-b border-tactical-700 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-alert-red/20 border border-alert-red/40 flex items-center justify-center text-alert-red">
@@ -279,7 +285,7 @@
                             <h3 class="font-display text-xl font-bold uppercase tracking-wide text-white" id="modal-title">
                                 Reportar / Votar Sospechoso
                             </h3>
-                            <p class="text-xs text-slate-400">El voto se vincula al Código Numérico Fijo del jugador</p>
+                            <p class="text-xs text-slate-400">El voto se vincula al Código Fijo (XXXX-XXX) del jugador</p>
                         </div>
                     </div>
                     <button onclick="closeReportModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-tactical-700 transition-colors">
@@ -287,10 +293,8 @@
                     </button>
                 </div>
 
-                <!-- Formulario de Reporte -->
                 <form id="reportForm" onsubmit="handleReportSubmit(event)" class="p-6 space-y-4">
                     
-                    <!-- Aviso dinámico si el código ya existe -->
                     <div id="existingPlayerNotice" class="hidden p-3 rounded-lg bg-alert-orange/15 border border-alert-orange/40 text-xs text-orange-200 flex items-start gap-2.5">
                         <i class="fa-solid fa-circle-info text-alert-orange mt-0.5"></i>
                         <div>
@@ -298,7 +302,7 @@
                         </div>
                     </div>
 
-                    <!-- Campo 1: Código Alfanumérico Fijo XXXX-XXX (OBLIGATORIO) -->
+                    <!-- Campo 1: Código Alfanumérico Fijo XXXX-XXX -->
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
                             <label for="playerCodeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300">
@@ -325,7 +329,7 @@
                         </p>
                     </div>
 
-                    <!-- Campo 2: Better known as / Nombre visto (OBLIGATORIO) -->
+                    <!-- Campo 2: Better known as -->
                     <div>
                         <label for="playerAliasInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
                             2. Better known as (Nombre con el que lo viste) <span class="text-alert-red">*</span>
@@ -340,9 +344,9 @@
                         </div>
                     </div>
 
-                    <!-- Campo 3: Servidor (OBLIGATORIO) -->
+                    <!-- Campo 3: Servidor -->
                     <div>
-                        <label for="playerServerInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        <label for="playerServerSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
                             3. Servidor donde estaba jugando <span class="text-alert-red">*</span>
                         </label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -361,7 +365,7 @@
                         </div>
                     </div>
 
-                    <!-- Campo 4: Tipo de Sospecha / Cheat (OPCIONAL) -->
+                    <!-- Campo 4: Tipo de Sospecha / Cheat -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                         <div>
                             <label for="cheatTypeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
@@ -393,9 +397,64 @@
                         <button type="button" onclick="closeReportModal()" class="px-4 py-2.5 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 text-sm font-medium transition-colors">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-alert-red to-alert-crimson hover:from-red-500 hover:to-alert-red text-white font-bold text-sm shadow-neon-red transition-all flex items-center gap-2 cursor-pointer">
+                        <button type="submit" id="submitReportBtn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-alert-red to-alert-crimson hover:from-red-500 hover:to-alert-red text-white font-bold text-sm shadow-neon-red transition-all flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-check"></i>
                             <span id="submitBtnText">Confirmar Voto / Reporte</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: CONFIGURACIÓN DE SUPABASE ==================== -->
+    <div id="configModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeConfigModal()"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-tactical-900 border border-tactical-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div class="bg-tactical-850 px-6 py-4 border-b border-tactical-700 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-alert-cyan/20 border border-alert-cyan/40 flex items-center justify-center text-alert-cyan">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display text-xl font-bold uppercase tracking-wide text-white">
+                                Credenciales de Supabase
+                            </h3>
+                            <p class="text-xs text-slate-400">Project Settings → API en tu panel de Supabase</p>
+                        </div>
+                    </div>
+                    <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-tactical-700">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="saveSupabaseCredentials(event)" class="p-6 space-y-4">
+                    <div>
+                        <label for="supabaseUrlInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            Project URL <span class="text-alert-red">*</span>
+                        </label>
+                        <input type="url" id="supabaseUrlInput" required
+                            placeholder="https://tu-proyecto.supabase.co" 
+                            class="w-full px-3.5 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg font-mono text-xs text-white placeholder-slate-600 focus:outline-none focus:border-alert-cyan">
+                    </div>
+
+                    <div>
+                        <label for="supabaseKeyInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            Project API Key (anon / public) <span class="text-alert-red">*</span>
+                        </label>
+                        <textarea id="supabaseKeyInput" required rows="3"
+                            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
+                            class="w-full px-3.5 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg font-mono text-xs text-white placeholder-slate-600 focus:outline-none focus:border-alert-cyan"></textarea>
+                    </div>
+
+                    <div class="pt-3 border-t border-tactical-800 flex items-center justify-end gap-2">
+                        <button type="button" onclick="closeConfigModal()" class="px-4 py-2 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 text-xs font-medium">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-alert-cyan hover:bg-cyan-300 text-tactical-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            Guardar y Conectar
                         </button>
                     </div>
                 </form>
@@ -406,109 +465,83 @@
     <!-- ==================== NOTIFICACIÓN TOAST FLOTANTE ==================== -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- ==================== LÓGICA JAVASCRIPT ==================== -->
+    <!-- ==================== LÓGICA JAVASCRIPT + SUPABASE ==================== -->
     <script>
-        // Clave para persistencia en localStorage (v2 para formato XXXX-XXX)
+        
+        const SUPABASE_URL = https://wpxpclkxptddvswzpafe.supabase.co/rest/v1/       
+        const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHBjbGt4cHRkZHZzd3pwYWZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNDA4MTgsImV4cCI6MjExMDYxNjgxOH0.P8hl8sfTFOP8M_xuuAsETskgquiw2REJjMQgVRhOm7c 
+        
+
         const STORAGE_KEY = 'wardog_watchlist_data_v2_alnum';
         const VOTED_SESSION_KEY = 'wardog_user_voted_codes_v2_alnum';
+        const SB_URL_STORAGE = 'wardog_sb_url';
+        const SB_KEY_STORAGE = 'wardog_sb_anon_key';
         const PLAYER_CODE_REGEX = /^[A-Z0-9]{4}-[A-Z0-9]{3}$/;
 
-        // Datos de ejemplo realistas precargados para Wardog con códigos XXXX-XXX
         const INITIAL_MOCK_DATA = [
             {
                 code: "K9X2-7M4",
                 votes: 47,
-                aliases: ["GhostReaper_AR", "SinNombre123", "KIller_Pro99", "TacticalWolf"],
+                aliases: ["GhostReaper_AR", "SinNombre123", "KIller_Pro99"],
                 servers: ["SA Oficial #1", "SA Hardcore #1"],
                 cheats: ["Aimbot", "Wallhack / ESP"],
                 lastNote: "Dispara a través de paredes en zona industrial sin tener visión.",
-                lastUpdated: "Hace 18 min"
+                lastUpdated: "Ejemplo local"
             },
             {
                 code: "4B8N-Q12",
                 votes: 34,
-                aliases: ["ViperStrike", "El_Inmortal", "User_9941"],
+                aliases: ["ViperStrike", "El_Inmortal"],
                 servers: ["SA Oficial #2", "SA Oficial #1"],
                 cheats: ["No Recoil / Macro", "Wallhack / ESP"],
                 lastNote: "Cero retroceso con AK a más de 200 metros en ráfaga completa.",
-                lastUpdated: "Hace 1 hora"
-            },
-            {
-                code: "R7P3-9W0",
-                votes: 26,
-                aliases: ["ShadowWalker", "xX_NoMercy_Xx", "BalaPerdida"],
-                servers: ["NA East #1", "SA Oficial #1"],
-                cheats: ["Speedhack / Teleport"],
-                lastNote: "Se mueve al doble de velocidad cuando lo flanquean.",
-                lastUpdated: "Hace 3 horas"
-            },
-            {
-                code: "V2D6-5H8",
-                votes: 19,
-                aliases: ["HeadshotMachine", "11111111"],
-                servers: ["SA Hardcore #1"],
-                cheats: ["Aimbot"],
-                lastNote: "Gira 180 grados instantáneamente y conecta puro headshot.",
-                lastUpdated: "Hace 5 horas"
-            },
-            {
-                code: "M1L9-3C4",
-                votes: 12,
-                aliases: ["RadarKing", "OjoDeHalcon", "Cazador_UY"],
-                servers: ["SA Oficial #2", "NA East #1"],
-                cheats: ["Radar Hack", "Wallhack / ESP"],
-                lastNote: "Sabe exactamente en qué arbusto o habitación estás escondido sin hacer ruido.",
-                lastUpdated: "Ayer"
-            },
-            {
-                code: "Z4R8-7Q1",
-                votes: 7,
-                aliases: ["ZorroTactico"],
-                servers: ["EU Central #1"],
-                cheats: ["No Recoil / Macro"],
-                lastNote: "Macro evidente en armas semiautomáticas.",
-                lastUpdated: "Hace 2 días"
+                lastUpdated: "Ejemplo local"
             }
         ];
 
-        // Normaliza cualquier entrada de código al formato XXXX-XXX en mayúsculas
+        let supabaseClient = null;
+        let isCloudMode = false;
+        let realtimeChannel = null;
+        let playersList = [];
+        let userVotedCodes = new Set();
+
         function formatWardogCode(rawValue) {
             if (!rawValue) return '';
-            // Eliminar el símbolo '#' si el usuario lo pegó y quitar todo lo que no sea alfanumérico
             const cleaned = String(rawValue)
                 .toUpperCase()
                 .replace(/^#/, '')
                 .replace(/[^A-Z0-9]/g, '')
                 .slice(0, 7);
 
-            if (cleaned.length > 4) {
-                return `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
-            }
-            return cleaned;
+            return cleaned.length > 4
+                ? `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`
+                : cleaned;
         }
 
-        // Estado en memoria
-        let playersList = [];
-        let userVotedCodes = new Set();
+        function formatRelativeTime(isoString) {
+            if (!isoString) return 'Reciente';
+            const date = new Date(isoString);
+            if (isNaN(date.getTime())) return isoString;
 
-        // Inicialización al cargar la página
+            const diffSec = Math.floor((Date.now() - date.getTime()) / 1000);
+            if (diffSec < 60) return 'Ahora mismo';
+            const diffMin = Math.floor(diffSec / 60);
+            if (diffMin < 60) return `Hace ${diffMin} min`;
+            const diffHours = Math.floor(diffMin / 60);
+            if (diffHours < 24) return `Hace ${diffHours} h`;
+            const diffDays = Math.floor(diffHours / 24);
+            return diffDays === 1 ? 'Ayer' : `Hace ${diffDays} días`;
+        }
+
+        function isConfiguredCredential(val, placeholder) {
+            return Boolean(val && val.trim() !== '' && val.trim() !== placeholder);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             initApp();
         });
 
-        function initApp() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                try {
-                    playersList = JSON.parse(savedData);
-                } catch (e) {
-                    playersList = [...INITIAL_MOCK_DATA];
-                }
-            } else {
-                playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
-                saveData();
-            }
-
+        async function initApp() {
             const savedVotes = localStorage.getItem(VOTED_SESSION_KEY);
             if (savedVotes) {
                 try {
@@ -518,27 +551,164 @@
                 }
             }
 
+            const hardcodedUrl = isConfiguredCredential(SUPABASE_URL, "PEGA_AQUI_TU_PROJECT_URL") ? SUPABASE_URL.trim().replace(/\/$/, '') : '';
+            const hardcodedKey = isConfiguredCredential(SUPABASE_ANON_KEY, "PEGA_AQUI_TU_ANON_PUBLIC_KEY") ? SUPABASE_ANON_KEY.trim() : '';
+
+            const activeUrl = hardcodedUrl || localStorage.getItem(SB_URL_STORAGE) || '';
+            const activeKey = hardcodedKey || localStorage.getItem(SB_KEY_STORAGE) || '';
+
+            if (activeUrl && activeKey && window.supabase) {
+                await connectToSupabase(activeUrl, activeKey);
+            } else {
+                loadLocalFallbackData();
+            }
+        }
+
+        async function connectToSupabase(url, anonKey) {
+            try {
+                setLoading(true);
+                supabaseClient = window.supabase.createClient(url, anonKey);
+
+                const { data, error } = await supabaseClient
+                    .from('suspects')
+                    .select('*')
+                    .order('votes', { ascending: false });
+
+                if (error) throw error;
+
+                isCloudMode = true;
+                updateConnectionUI(true);
+                mapSupabaseRows(data || []);
+                setupRealtimeSubscription();
+                populateServerFilter();
+                renderRanking();
+            } catch (err) {
+                console.error("Error conectando con Supabase:", err);
+                isCloudMode = false;
+                supabaseClient = null;
+                updateConnectionUI(false);
+                showToast(`Error Supabase: ${err.message || 'Verifica tus claves y el script SQL.'}`, "error");
+                loadLocalFallbackData();
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function setupRealtimeSubscription() {
+            if (!supabaseClient) return;
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+            }
+
+            realtimeChannel = supabaseClient
+                .channel('public:suspects')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'suspects' }, () => {
+                    fetchLatestFromSupabase(true);
+                })
+                .subscribe();
+        }
+
+        async function fetchLatestFromSupabase(silent = false) {
+            if (!supabaseClient || !isCloudMode) return;
+            try {
+                if (!silent) setRefreshSpin(true);
+                const { data, error } = await supabaseClient
+                    .from('suspects')
+                    .select('*')
+                    .order('votes', { ascending: false });
+
+                if (error) throw error;
+
+                mapSupabaseRows(data || []);
+                populateServerFilter();
+                renderRanking();
+                if (!silent) showToast("Ranking sincronizado con Supabase.", "info");
+            } catch (err) {
+                if (!silent) showToast("No se pudo sincronizar con Supabase.", "error");
+            } finally {
+                setRefreshSpin(false);
+            }
+        }
+
+        function mapSupabaseRows(rows) {
+            playersList = rows.map(row => ({
+                code: row.code,
+                votes: Number(row.votes) || 1,
+                aliases: Array.isArray(row.aliases) ? row.aliases : [],
+                servers: Array.isArray(row.servers) ? row.servers : [],
+                cheats: Array.isArray(row.cheats) ? row.cheats : [],
+                lastNote: row.last_note || '',
+                lastUpdated: formatRelativeTime(row.updated_at)
+            }));
+        }
+
+        function loadLocalFallbackData() {
+            isCloudMode = false;
+            updateConnectionUI(false);
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    playersList = JSON.parse(savedData);
+                } catch (e) {
+                    playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
+                }
+            } else {
+                playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
+                saveLocalData();
+            }
             populateServerFilter();
             renderRanking();
         }
 
-        // Guardar datos en localStorage
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(playersList));
+        function saveLocalData() {
+            if (!isCloudMode) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(playersList));
+            }
             localStorage.setItem(VOTED_SESSION_KEY, JSON.stringify([...userVotedCodes]));
         }
 
-        // Restaurar datos iniciales de ejemplo
-        function resetDemoData() {
-            playersList = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
-            userVotedCodes.clear();
-            saveData();
-            populateServerFilter();
-            renderRanking();
-            showToast("Datos de demostración restaurados correctamente.", "info");
+        function updateConnectionUI(connected) {
+            const badge = document.getElementById('dbStatusBadge');
+            const banner = document.getElementById('setupBanner');
+
+            if (connected) {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 cursor-pointer";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>ONLINE • LIVE</span>`;
+                banner.classList.add('hidden');
+            } else {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40 cursor-pointer";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>SIN CONEXIÓN DB</span>`;
+                banner.classList.remove('hidden');
+            }
         }
 
-        // Rellenar dinámicamente el filtro de servidores según los registros existentes
+        function setLoading(isLoading) {
+            const loader = document.getElementById('loadingState');
+            const list = document.getElementById('rankingList');
+            if (isLoading) {
+                loader.classList.remove('hidden');
+                list.classList.add('hidden');
+            } else {
+                loader.classList.add('hidden');
+                list.classList.remove('hidden');
+            }
+        }
+
+        function setRefreshSpin(spinning) {
+            const icon = document.getElementById('refreshIcon');
+            if (spinning) icon.classList.add('fa-spin');
+            else icon.classList.remove('fa-spin');
+        }
+
+        function refreshRankingFromSource() {
+            if (isCloudMode) {
+                fetchLatestFromSupabase(false);
+            } else {
+                renderRanking();
+                showToast("Lista local actualizada.", "info");
+            }
+        }
+
         function populateServerFilter() {
             const serverSelect = document.getElementById('serverFilter');
             const currentVal = serverSelect.value;
@@ -561,7 +731,6 @@
             }
         }
 
-        // Actualizar estadísticas globales superiores
         function updateGlobalStats() {
             const totalSuspects = playersList.length;
             const totalVotes = playersList.reduce((acc, p) => acc + p.votes, 0);
@@ -570,7 +739,6 @@
             document.getElementById('stat-total-votes').textContent = totalVotes;
         }
 
-        // Renderizar el Ranking completo ordenado por votos
         function renderRanking() {
             updateGlobalStats();
 
@@ -579,16 +747,10 @@
             const selectedCheat = document.getElementById('cheatFilter').value;
             const clearBtn = document.getElementById('clearSearchBtn');
 
-            if (searchTerm.length > 0) {
-                clearBtn.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
-            }
+            if (searchTerm.length > 0) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
 
-            // 1. Ordenar de mayor a menor cantidad de votos
             const sortedPlayers = [...playersList].sort((a, b) => b.votes - a.votes);
-
-            // 2. Filtrar según búsqueda (con o sin guion), servidor y tipo de cheat
             const normalizedSearchAlnum = searchTerm.replace(/[^a-z0-9]/g, '');
 
             const filteredPlayers = sortedPlayers.filter(player => {
@@ -622,11 +784,9 @@
             container.innerHTML = '';
 
             filteredPlayers.forEach((player) => {
-                // Calcular posición real en el ranking global
                 const globalRank = sortedPlayers.findIndex(p => p.code === player.code) + 1;
                 const hasVoted = userVotedCodes.has(player.code);
 
-                // Estilos especiales para el Top 3
                 let rankBadgeClass = "bg-tactical-800 text-slate-300 border-tactical-700";
                 let cardBorderClass = "border-tactical-700/80 hover:border-tactical-600";
                 let threatLabel = "SOSPECHOSO";
@@ -649,9 +809,7 @@
                     threatColor = "text-amber-400 bg-amber-500/15 border-amber-500/40";
                 }
 
-                // Renderizar badges de Aliases ("Better known as")
                 const aliasesHtml = player.aliases.map((alias, idx) => {
-                    // El más reciente o principal tiene ligero énfasis
                     const isLatest = idx === 0;
                     return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${isLatest ? 'bg-slate-800 text-white border border-slate-600' : 'bg-tactical-950/90 text-slate-300 border border-tactical-700/80'}">
                         <i class="fa-solid fa-user-secret text-[10px] ${isLatest ? 'text-alert-orange' : 'text-slate-500'}"></i>
@@ -659,7 +817,6 @@
                     </span>`;
                 }).join('');
 
-                // Renderizar badges de Servidores
                 const serversHtml = player.servers.map(server => `
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-tactical-800/90 text-alert-cyan border border-alert-cyan/25">
                         <span class="w-1.5 h-1.5 rounded-full bg-alert-cyan"></span>
@@ -667,7 +824,6 @@
                     </span>
                 `).join('');
 
-                // Renderizar tags de tipos de cheats reportados
                 const cheatsHtml = player.cheats.map(cheat => `
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-alert-red/10 text-red-300 border border-alert-red/25">
                         ${escapeHtml(cheat)}
@@ -679,20 +835,13 @@
                 
                 card.innerHTML = `
                     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        
-                        <!-- BLOQUE IZQUIERDO: Posición + Código Fijo + Better Known As + Servidores -->
                         <div class="flex items-start gap-3.5 sm:gap-4 flex-1 min-w-0">
-                            
-                            <!-- Número de Ranking (#1, #2...) -->
                             <div class="flex flex-col items-center justify-center w-12 h-14 sm:w-14 sm:h-16 rounded-xl border ${rankBadgeClass} shrink-0 font-display">
                                 <span class="text-[10px] uppercase tracking-widest opacity-80 leading-none">TOP</span>
                                 <span class="text-2xl sm:text-3xl font-extrabold leading-tight">#${globalRank}</span>
                             </div>
 
-                            <!-- Información Estructurada del Jugador -->
                             <div class="flex-1 min-w-0 space-y-2.5">
-                                
-                                <!-- 1. PRIMERO Y MÁS DESTACADO: CÓDIGO FIJO (XXXX-XXX) -->
                                 <div class="flex flex-wrap items-center gap-2.5">
                                     <div class="inline-flex items-center gap-2 bg-tactical-950 border border-tactical-700 px-3 py-1 rounded-lg">
                                         <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Código Fijo:</span>
@@ -711,7 +860,6 @@
                                     </span>
                                 </div>
 
-                                <!-- 2. DEBAJO: BETTER KNOWN AS (Aliases vistos por los votantes) -->
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     <span class="text-xs font-bold uppercase tracking-wider text-alert-orange mr-1 flex items-center gap-1">
                                         <i class="fa-solid fa-masks-theater"></i>
@@ -720,7 +868,6 @@
                                     ${aliasesHtml}
                                 </div>
 
-                                <!-- 3. SERVIDOR(ES) DONDE FUE VISTO JUGANDO -->
                                 <div class="flex flex-wrap items-center gap-2 pt-0.5">
                                     <span class="text-xs font-semibold text-slate-400 flex items-center gap-1">
                                         <i class="fa-solid fa-server text-slate-500"></i>
@@ -728,14 +875,12 @@
                                     </span>
                                     ${serversHtml}
                                     
-                                    <!-- Separador y Tags de Sospechas -->
                                     <span class="hidden sm:inline text-tactical-700">|</span>
                                     <div class="flex flex-wrap items-center gap-1.5">
                                         ${cheatsHtml}
                                     </div>
                                 </div>
 
-                                <!-- Nota de evidencia reciente (si existe) -->
                                 ${player.lastNote ? `
                                     <p class="text-xs text-slate-400 bg-tactical-950/60 border-l-2 border-tactical-700 pl-2.5 py-1 rounded-r italic">
                                         "${escapeHtml(player.lastNote)}"
@@ -744,10 +889,7 @@
                             </div>
                         </div>
 
-                        <!-- BLOQUE DERECHO: Contador de Votos y Botones de Acción -->
                         <div class="flex sm:flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-tactical-800 lg:pl-5 shrink-0">
-                            
-                            <!-- Contador de Reportes / Votos -->
                             <div class="flex items-center lg:flex-col gap-2 lg:gap-0 text-center">
                                 <span class="font-mono text-2xl sm:text-3xl font-extrabold ${globalRank === 1 ? 'text-alert-red' : 'text-white'} leading-none">
                                     ${player.votes}
@@ -757,7 +899,6 @@
                                 </span>
                             </div>
 
-                            <!-- Botones de Voto Rápido y Añadir Alias/Servidor -->
                             <div class="flex items-center gap-2">
                                 <button onclick="quickVote('${escapeHtml(player.code)}')" 
                                     class="px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer
@@ -776,7 +917,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 `;
 
@@ -784,32 +924,43 @@
             });
         }
 
-        // Aplicar filtros desde los inputs
         function applyFilters() {
             renderRanking();
         }
 
-        // Limpiar barra de búsqueda
         function clearSearch() {
             document.getElementById('searchInput').value = '';
             applyFilters();
         }
 
-        // Voto rápido (+1 directo)
-        function quickVote(code) {
+        async function quickVote(code) {
             const player = playersList.find(p => p.code === code);
             if (!player) return;
 
-            player.votes += 1;
-            player.lastUpdated = "Ahora mismo";
-            userVotedCodes.add(code);
-            
-            saveData();
-            renderRanking();
-            showToast(`+1 voto registrado para el código #${code} (${player.aliases[0]})`, "success");
+            if (isCloudMode && supabaseClient) {
+                try {
+                    const { error } = await supabaseClient.rpc('increment_suspect_vote', {
+                        p_code: code
+                    });
+                    if (error) throw error;
+
+                    userVotedCodes.add(code);
+                    saveLocalData();
+                    await fetchLatestFromSupabase(true);
+                    showToast(`+1 voto registrado para #${code}`, "success");
+                } catch (err) {
+                    showToast(`Error al votar: ${err.message}`, "error");
+                }
+            } else {
+                player.votes += 1;
+                player.lastUpdated = "Ahora mismo";
+                userVotedCodes.add(code);
+                saveLocalData();
+                renderRanking();
+                showToast(`+1 voto local registrado para #${code}`, "success");
+            }
         }
 
-        // Abrir modal vacío
         function openReportModal() {
             document.getElementById('reportForm').reset();
             document.getElementById('customServerInput').classList.add('hidden');
@@ -820,7 +971,6 @@
             setTimeout(() => document.getElementById('playerCodeInput').focus(), 100);
         }
 
-        // Abrir modal pre-rellenando el Código Fijo (para añadir nuevo alias o servidor)
         function openReportModalWithCode(code) {
             openReportModal();
             const codeInput = document.getElementById('playerCodeInput');
@@ -829,12 +979,36 @@
             setTimeout(() => document.getElementById('playerAliasInput').focus(), 100);
         }
 
-        // Cerrar modal
         function closeReportModal() {
             document.getElementById('reportModal').classList.add('hidden');
         }
 
-        // Restablecer estilos visuales de validación del input de código
+        function openConfigModal() {
+            const currentUrl = isConfiguredCredential(SUPABASE_URL, "PEGA_AQUI_TU_PROJECT_URL") ? SUPABASE_URL : (localStorage.getItem(SB_URL_STORAGE) || '');
+            const currentKey = isConfiguredCredential(SUPABASE_ANON_KEY, "PEGA_AQUI_TU_ANON_PUBLIC_KEY") ? SUPABASE_ANON_KEY : (localStorage.getItem(SB_KEY_STORAGE) || '');
+            document.getElementById('supabaseUrlInput').value = currentUrl;
+            document.getElementById('supabaseKeyInput').value = currentKey;
+            document.getElementById('configModal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+
+        async function saveSupabaseCredentials(event) {
+            event.preventDefault();
+            const url = document.getElementById('supabaseUrlInput').value.trim().replace(/\/$/, '');
+            const key = document.getElementById('supabaseKeyInput').value.trim();
+
+            localStorage.setItem(SB_URL_STORAGE, url);
+            localStorage.setItem(SB_KEY_STORAGE, key);
+            closeConfigModal();
+            await connectToSupabase(url, key);
+            if (isCloudMode) {
+                showToast("¡Conectado a Supabase correctamente!", "success");
+            }
+        }
+
         function resetCodeValidationUI() {
             const input = document.getElementById('playerCodeInput');
             const badge = document.getElementById('codeFormatBadge');
@@ -854,7 +1028,6 @@
             helper.className = 'text-[11px] text-slate-500 mt-1';
         }
 
-        // Formatear y validar en tiempo real el input del Código Fijo (XXXX-XXX)
         function handleCodeInput(inputEl) {
             const formatted = formatWardogCode(inputEl.value);
             inputEl.value = formatted;
@@ -903,7 +1076,6 @@
             checkExistingCode(formatted);
         }
 
-        // Verificar en tiempo real si el código ingresado ya existe en el ranking
         function checkExistingCode(codeValue) {
             const cleanCode = formatWardogCode(codeValue);
             const existing = PLAYER_CODE_REGEX.test(cleanCode) 
@@ -921,7 +1093,6 @@
             }
         }
 
-        // Mostrar input de servidor personalizado si elige "Otro"
         function toggleCustomServer(val) {
             const customInput = document.getElementById('customServerInput');
             if (val === 'CUSTOM') {
@@ -934,8 +1105,7 @@
             }
         }
 
-        // Procesar envío del formulario de reporte/voto
-        function handleReportSubmit(event) {
+        async function handleReportSubmit(event) {
             event.preventDefault();
 
             const rawCode = formatWardogCode(document.getElementById('playerCodeInput').value);
@@ -945,9 +1115,8 @@
             const cheatType = document.getElementById('cheatTypeInput').value;
             const note = document.getElementById('evidenceNoteInput').value.trim();
 
-            // Validación estricta del formato XXXX-XXX
             if (!PLAYER_CODE_REGEX.test(rawCode)) {
-                showToast("El código debe tener exactamente 4 caracteres alfanuméricos, un guion y 3 alfanuméricos (Ej: A7K9-2M4).", "error");
+                showToast("El código debe tener formato XXXX-XXX (Ej: A7K9-2M4).", "error");
                 document.getElementById('playerCodeInput').focus();
                 return;
             }
@@ -957,62 +1126,63 @@
             }
 
             const finalServer = serverSelectVal === 'CUSTOM' ? (customServerVal || 'Servidor Privado') : serverSelectVal;
+            const submitBtn = document.getElementById('submitReportBtn');
 
-            // Buscar si el Código Fijo ya existe en la lista
-            const existingPlayer = playersList.find(p => p.code === rawCode);
+            if (isCloudMode && supabaseClient) {
+                try {
+                    submitBtn.disabled = true;
+                    const { error } = await supabaseClient.rpc('submit_suspect_report', {
+                        p_code: rawCode,
+                        p_alias: rawAlias,
+                        p_server: finalServer,
+                        p_cheat: cheatType || 'Sospechoso',
+                        p_note: note || ''
+                    });
 
-            if (existingPlayer) {
-                // Sumar voto
-                existingPlayer.votes += 1;
-                existingPlayer.lastUpdated = "Ahora mismo";
+                    if (error) throw error;
 
-                // Agregar el alias al principio de "Better known as" si no existe (case-insensitive)
-                const aliasExists = existingPlayer.aliases.some(a => a.toLowerCase() === rawAlias.toLowerCase());
-                if (!aliasExists) {
-                    existingPlayer.aliases.unshift(rawAlias);
+                    userVotedCodes.add(rawCode);
+                    saveLocalData();
+                    await fetchLatestFromSupabase(true);
+                    closeReportModal();
+                    showToast(`Reporte para #${rawCode} (${rawAlias}) guardado correctamente.`, "success");
+                } catch (err) {
+                    showToast(`Error al guardar reporte: ${err.message}`, "error");
+                } finally {
+                    submitBtn.disabled = false;
                 }
-
-                // Agregar servidor si no estaba registrado
-                if (!existingPlayer.servers.includes(finalServer)) {
-                    existingPlayer.servers.push(finalServer);
-                }
-
-                // Agregar tipo de cheat si no estaba
-                if (cheatType && !existingPlayer.cheats.includes(cheatType)) {
-                    existingPlayer.cheats.push(cheatType);
-                }
-
-                // Actualizar nota si escribió una nueva
-                if (note) {
-                    existingPlayer.lastNote = note;
-                }
-
-                userVotedCodes.add(rawCode);
-                showToast(`¡Voto sumado! El código #${rawCode} ahora tiene ${existingPlayer.votes} votos.`, "success");
             } else {
-                // Crear nuevo registro en el ranking
-                const newPlayer = {
-                    code: rawCode,
-                    votes: 1,
-                    aliases: [rawAlias],
-                    servers: [finalServer],
-                    cheats: cheatType ? [cheatType] : ["Sospechoso"],
-                    lastNote: note || "",
-                    lastUpdated: "Ahora mismo"
-                };
+                const existingPlayer = playersList.find(p => p.code === rawCode);
 
-                playersList.push(newPlayer);
+                if (existingPlayer) {
+                    existingPlayer.votes += 1;
+                    existingPlayer.lastUpdated = "Ahora mismo";
+                    const aliasExists = existingPlayer.aliases.some(a => a.toLowerCase() === rawAlias.toLowerCase());
+                    if (!aliasExists) existingPlayer.aliases.unshift(rawAlias);
+                    if (!existingPlayer.servers.includes(finalServer)) existingPlayer.servers.push(finalServer);
+                    if (cheatType && !existingPlayer.cheats.includes(cheatType)) existingPlayer.cheats.push(cheatType);
+                    if (note) existingPlayer.lastNote = note;
+                } else {
+                    playersList.push({
+                        code: rawCode,
+                        votes: 1,
+                        aliases: [rawAlias],
+                        servers: [finalServer],
+                        cheats: cheatType ? [cheatType] : ["Sospechoso"],
+                        lastNote: note || "",
+                        lastUpdated: "Ahora mismo"
+                    });
+                }
+
                 userVotedCodes.add(rawCode);
-                showToast(`Nuevo sospechoso #${rawCode} (${rawAlias}) añadido al ranking.`, "success");
+                saveLocalData();
+                populateServerFilter();
+                renderRanking();
+                closeReportModal();
+                showToast(`Reporte local guardado para #${rawCode} (${rawAlias}).`, "success");
             }
-
-            saveData();
-            populateServerFilter();
-            renderRanking();
-            closeReportModal();
         }
 
-        // Copiar código numérico al portapapeles (compatible con iframes)
         function copyPlayerCode(code) {
             const tempInput = document.createElement('input');
             tempInput.value = code;
@@ -1027,7 +1197,6 @@
             document.body.removeChild(tempInput);
         }
 
-        // Sistema de notificaciones Toast (sin usar alert())
         function showToast(message, type = "success") {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1051,19 +1220,16 @@
 
             container.appendChild(toast);
 
-            // Animación de entrada
             requestAnimationFrame(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             });
 
-            // Auto-eliminar después de 3.5 segundos
             setTimeout(() => {
                 toast.classList.add('opacity-0', 'translate-y-2');
                 setTimeout(() => toast.remove(), 300);
             }, 3500);
         }
 
-        // Utilidad para prevenir XSS en entradas de usuario
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -1074,10 +1240,10 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // Cerrar modal con tecla Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeReportModal();
+                closeConfigModal();
             }
         });
     </script>
