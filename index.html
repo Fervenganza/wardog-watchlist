@@ -463,6 +463,22 @@
         });
 
         async function initApp() {
+            const savedVotes = localStorage.getItem(VOTED_SESSION_KEY);
+            if (savedVotes) {
+                try {
+                    userVotedCodes = new Set(JSON.parse(savedVotes));
+                } catch (e) {
+                    userVotedCodes = new Set();
+                }
+            }
+
+            if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+                await connectToSupabase(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else {
+                loadLocalFallbackData();
+            }
+        }
+
         // Conectar cliente Supabase y cargar datos reales
         async function connectToSupabase(url, anonKey) {
             try {
