@@ -101,12 +101,12 @@
                             <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-wider uppercase text-white leading-none">
                                 WARDOG <span class="text-alert-red">WATCHLIST</span>
                             </h1>
-                            <!-- Indicador de Estado de Conexión -->
-                            <button onclick="openConfigModal()" id="dbStatusBadge" title="Estado de conexión con Supabase"
-                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40 hover:bg-amber-500/25 transition-colors cursor-pointer">
+                            <!-- Indicador de Estado en Vivo -->
+                            <span id="dbStatusBadge"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                                 <span>CONECTANDO...</span>
-                            </button>
+                            </span>
                         </div>
                         <p class="text-xs text-slate-400 mt-0.5">
                             Ranking comunitario de <span class="text-slate-200 font-medium">Códigos Fijos (XXXX-XXX)</span> sospechosos de Cheats / Hacks
@@ -131,21 +131,6 @@
 
     <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <!-- Banner de Aviso (solo visible si faltan las claves de Supabase) -->
-        <div id="setupBanner" class="hidden bg-gradient-to-r from-tactical-900 via-tactical-850 to-tactical-900 border border-alert-cyan/40 rounded-xl p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-lg bg-alert-cyan/15 border border-alert-cyan/40 flex items-center justify-center text-alert-cyan shrink-0 mt-0.5">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <div class="text-xs sm:text-sm text-slate-300">
-                    <span class="font-bold text-white">Faltan tus claves de Supabase:</span> Abre este <code class="font-mono text-alert-cyan">index.html</code> y pega tu <span class="font-mono text-alert-cyan">SUPABASE_URL</span> y <span class="font-mono text-alert-cyan">SUPABASE_ANON_KEY</span> (o haz clic en Configurar) para activar la base de datos global.
-                </div>
-            </div>
-            <button onclick="openConfigModal()" class="px-4 py-2 rounded-lg bg-alert-cyan/15 hover:bg-alert-cyan/25 text-alert-cyan border border-alert-cyan/40 text-xs font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer">
-                Configurar Claves
-            </button>
-        </div>
 
         <!-- Banner Informativo sobre el Sistema de Código Fijo -->
         <div class="bg-tactical-900/90 border-l-4 border-alert-orange rounded-r-xl p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -262,14 +247,13 @@
                 <i class="fa-solid fa-shield-halved text-alert-red"></i>
                 <span>WARDOG COMMUNITY WATCHLIST — Herramienta independiente creada por jugadores.</span>
             </div>
-            <div class="flex items-center gap-3">
-                <span>Base de datos: <span class="font-mono text-slate-400">Supabase Cloud</span></span>
-                <button onclick="openConfigModal()" class="text-slate-600 hover:text-slate-400 underline cursor-pointer">Configurar DB</button>
+            <div>
+                <span>Rastreo comunitario por Código Permanente <span class="font-mono text-slate-400">(XXXX-XXX)</span></span>
             </div>
         </div>
     </footer>
 
-    <!-- ==================== MODAL 1: REPORTAR / VOTAR JUGADOR ==================== -->
+    <!-- ==================== MODAL: REPORTAR / VOTAR JUGADOR ==================== -->
     <div id="reportModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeReportModal()"></div>
 
@@ -407,75 +391,16 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL 2: CONFIGURACIÓN DE SUPABASE ==================== -->
-    <div id="configModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeConfigModal()"></div>
-
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-2xl bg-tactical-900 border border-tactical-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div class="bg-tactical-850 px-6 py-4 border-b border-tactical-700 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-alert-cyan/20 border border-alert-cyan/40 flex items-center justify-center text-alert-cyan">
-                            <i class="fa-solid fa-database"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-display text-xl font-bold uppercase tracking-wide text-white">
-                                Credenciales de Supabase
-                            </h3>
-                            <p class="text-xs text-slate-400">Project Settings → API en tu panel de Supabase</p>
-                        </div>
-                    </div>
-                    <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-tactical-700">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-
-                <form onsubmit="saveSupabaseCredentials(event)" class="p-6 space-y-4">
-                    <div>
-                        <label for="supabaseUrlInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            Project URL <span class="text-alert-red">*</span>
-                        </label>
-                        <input type="url" id="supabaseUrlInput" required
-                            placeholder="https://tu-proyecto.supabase.co" 
-                            class="w-full px-3.5 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg font-mono text-xs text-white placeholder-slate-600 focus:outline-none focus:border-alert-cyan">
-                    </div>
-
-                    <div>
-                        <label for="supabaseKeyInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            Project API Key (anon / public) <span class="text-alert-red">*</span>
-                        </label>
-                        <textarea id="supabaseKeyInput" required rows="3"
-                            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
-                            class="w-full px-3.5 py-2.5 bg-tactical-950 border border-tactical-700 rounded-lg font-mono text-xs text-white placeholder-slate-600 focus:outline-none focus:border-alert-cyan"></textarea>
-                    </div>
-
-                    <div class="pt-3 border-t border-tactical-800 flex items-center justify-end gap-2">
-                        <button type="button" onclick="closeConfigModal()" class="px-4 py-2 rounded-lg bg-tactical-800 hover:bg-tactical-700 text-slate-300 text-xs font-medium">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="px-4 py-2 rounded-lg bg-alert-cyan hover:bg-cyan-300 text-tactical-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
-                            Guardar y Conectar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- ==================== NOTIFICACIÓN TOAST FLOTANTE ==================== -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- ==================== LÓGICA JAVASCRIPT + SUPABASE ==================== -->
     <script>
-        
-        const SUPABASE_URL = https://wpxpclkxptddvswzpafe.supabase.co/rest/v1/       
-        const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHBjbGt4cHRkZHZzd3pwYWZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNDA4MTgsImV4cCI6MjExMDYxNjgxOH0.P8hl8sfTFOP8M_xuuAsETskgquiw2REJjMQgVRhOm7c 
-        
+        const SUPABASE_URL = "https://wpxpclkxptddvswzpafe.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHBjbGt4cHRkZHZzd3pwYWZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNDA4MTgsImV4cCI6MjExMDYxNjgxOH0.P8hl8sfTFOP8M_xuuAsETskgquiw2REJjMQgVRhOm7c";
 
         const STORAGE_KEY = 'wardog_watchlist_data_v2_alnum';
         const VOTED_SESSION_KEY = 'wardog_user_voted_codes_v2_alnum';
-        const SB_URL_STORAGE = 'wardog_sb_url';
-        const SB_KEY_STORAGE = 'wardog_sb_anon_key';
         const PLAYER_CODE_REGEX = /^[A-Z0-9]{4}-[A-Z0-9]{3}$/;
 
         const INITIAL_MOCK_DATA = [
@@ -486,7 +411,7 @@
                 servers: ["SA Oficial #1", "SA Hardcore #1"],
                 cheats: ["Aimbot", "Wallhack / ESP"],
                 lastNote: "Dispara a través de paredes en zona industrial sin tener visión.",
-                lastUpdated: "Ejemplo local"
+                lastUpdated: "Reciente"
             },
             {
                 code: "4B8N-Q12",
@@ -495,7 +420,7 @@
                 servers: ["SA Oficial #2", "SA Oficial #1"],
                 cheats: ["No Recoil / Macro", "Wallhack / ESP"],
                 lastNote: "Cero retroceso con AK a más de 200 metros en ráfaga completa.",
-                lastUpdated: "Ejemplo local"
+                lastUpdated: "Reciente"
             }
         ];
 
@@ -533,52 +458,44 @@
             return diffDays === 1 ? 'Ayer' : `Hace ${diffDays} días`;
         }
 
-        function isConfiguredCredential(val, placeholder) {
-            return Boolean(val && val.trim() !== '' && val.trim() !== placeholder);
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
             initApp();
         });
 
         async function initApp() {
-            const savedVotes = localStorage.getItem(VOTED_SESSION_KEY);
-            if (savedVotes) {
-                try {
-                    userVotedCodes = new Set(JSON.parse(savedVotes));
-                } catch (e) {
-                    userVotedCodes = new Set();
-                }
-            }
-
-            const hardcodedUrl = isConfiguredCredential(SUPABASE_URL, "PEGA_AQUI_TU_PROJECT_URL") ? SUPABASE_URL.trim().replace(/\/$/, '') : '';
-            const hardcodedKey = isConfiguredCredential(SUPABASE_ANON_KEY, "PEGA_AQUI_TU_ANON_PUBLIC_KEY") ? SUPABASE_ANON_KEY.trim() : '';
-
-            const activeUrl = hardcodedUrl || localStorage.getItem(SB_URL_STORAGE) || '';
-            const activeKey = hardcodedKey || localStorage.getItem(SB_KEY_STORAGE) || '';
-
-            if (activeUrl && activeKey && window.supabase) {
-                await connectToSupabase(activeUrl, activeKey);
-            } else {
-                loadLocalFallbackData();
-            }
-        }
-
+        // Conectar cliente Supabase y cargar datos reales
         async function connectToSupabase(url, anonKey) {
             try {
                 setLoading(true);
                 supabaseClient = window.supabase.createClient(url, anonKey);
 
+                let rows = null;
                 const { data, error } = await supabaseClient
                     .from('suspects')
                     .select('*')
                     .order('votes', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    // Fallback: si el rol anon no tiene GRANT SELECT directo sobre la tabla,
+                    // intentamos leer mediante la función RPC get_suspects_ranking si existe.
+                    if (error.code === '42501') {
+                        const rpcRes = await supabaseClient.rpc('get_suspects_ranking');
+                        if (rpcRes.error) {
+                            throw new Error(
+                                "Permiso denegado en 'public.suspects' (42501). Ejecuta en Supabase SQL Editor: GRANT SELECT ON public.suspects TO anon;"
+                            );
+                        }
+                        rows = rpcRes.data || [];
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    rows = data || [];
+                }
 
                 isCloudMode = true;
                 updateConnectionUI(true);
-                mapSupabaseRows(data || []);
+                mapSupabaseRows(rows);
                 setupRealtimeSubscription();
                 populateServerFilter();
                 renderRanking();
@@ -587,7 +504,7 @@
                 isCloudMode = false;
                 supabaseClient = null;
                 updateConnectionUI(false);
-                showToast(`Error Supabase: ${err.message || 'Verifica tus claves y el script SQL.'}`, "error");
+                showToast(err.message || "No se pudo conectar con Supabase.", "error");
                 loadLocalFallbackData();
             } finally {
                 setLoading(false);
@@ -669,16 +586,13 @@
 
         function updateConnectionUI(connected) {
             const badge = document.getElementById('dbStatusBadge');
-            const banner = document.getElementById('setupBanner');
 
             if (connected) {
-                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 cursor-pointer";
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/40";
                 badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>ONLINE • LIVE</span>`;
-                banner.classList.add('hidden');
             } else {
-                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40 cursor-pointer";
-                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>SIN CONEXIÓN DB</span>`;
-                banner.classList.remove('hidden');
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/40";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>MODO OFFLINE</span>`;
             }
         }
 
@@ -983,32 +897,6 @@
             document.getElementById('reportModal').classList.add('hidden');
         }
 
-        function openConfigModal() {
-            const currentUrl = isConfiguredCredential(SUPABASE_URL, "PEGA_AQUI_TU_PROJECT_URL") ? SUPABASE_URL : (localStorage.getItem(SB_URL_STORAGE) || '');
-            const currentKey = isConfiguredCredential(SUPABASE_ANON_KEY, "PEGA_AQUI_TU_ANON_PUBLIC_KEY") ? SUPABASE_ANON_KEY : (localStorage.getItem(SB_KEY_STORAGE) || '');
-            document.getElementById('supabaseUrlInput').value = currentUrl;
-            document.getElementById('supabaseKeyInput').value = currentKey;
-            document.getElementById('configModal').classList.remove('hidden');
-        }
-
-        function closeConfigModal() {
-            document.getElementById('configModal').classList.add('hidden');
-        }
-
-        async function saveSupabaseCredentials(event) {
-            event.preventDefault();
-            const url = document.getElementById('supabaseUrlInput').value.trim().replace(/\/$/, '');
-            const key = document.getElementById('supabaseKeyInput').value.trim();
-
-            localStorage.setItem(SB_URL_STORAGE, url);
-            localStorage.setItem(SB_KEY_STORAGE, key);
-            closeConfigModal();
-            await connectToSupabase(url, key);
-            if (isCloudMode) {
-                showToast("¡Conectado a Supabase correctamente!", "success");
-            }
-        }
-
         function resetCodeValidationUI() {
             const input = document.getElementById('playerCodeInput');
             const badge = document.getElementById('codeFormatBadge');
@@ -1243,7 +1131,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeReportModal();
-                closeConfigModal();
             }
         });
     </script>
